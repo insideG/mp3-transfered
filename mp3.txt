@@ -1,0 +1,66 @@
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include "windows.h"
+#pragma warning(disable : 4996)
+//#pragma warning( disable : 4996 34; once : 4385; error : 164 )
+struct mp3
+
+{
+	char header[4];
+	char title[31];
+	char artist[31];  
+	char album[31];
+	char year[5];
+	char comment[29];
+	char Flag_oc[2];
+	char oc[2];
+	char Style[2];
+};
+
+int main(int argc, char* argv[])
+{
+	FILE* fp;
+	char* file_name = "C:\\Users\\17508\\Desktop\\c学习\\画心.mp3";
+	struct mp3 mp3_info;
+
+
+	fp = fopen(file_name, "r");
+	if (fp == NULL)
+	{
+		printf("can't open file %s", file_name);
+		return -1;
+	}
+
+
+	fseek(fp, -128 * sizeof(char), SEEK_END);
+	fread(mp3_info.header, sizeof(char), 3, fp);
+	//读信息
+	fread(mp3_info.title, sizeof(char), 30, fp);
+	fread(mp3_info.artist, sizeof(char), 30, fp);
+	fread(mp3_info.album, sizeof(char), 30, fp);
+	fread(mp3_info.year, sizeof(char), 4, fp);
+	fread(mp3_info.comment, sizeof(char), 28, fp);
+	fread(mp3_info.Flag_oc, sizeof(char), 1, fp);
+	fread(mp3_info.oc, sizeof(char), 1, fp);
+	fread(mp3_info.Style, sizeof(char), 1, fp);
+
+	//添加'\0'
+	mp3_info.title[30] = mp3_info.artist[30] = 0;
+	mp3_info.album[30] = mp3_info.year[4] = 0;
+	mp3_info.comment[28] = mp3_info.Flag_oc[1] = 0;
+	mp3_info.oc[1] = mp3_info.Style[1] = 0;
+
+	//打印
+	printf("Title : %s\n", mp3_info.title);
+	printf("Artist : %s\n", mp3_info.artist);
+	printf("Album : %s\n", mp3_info.album);
+	printf("Year : %s\n", mp3_info.year);
+	printf("Comment : %s\n", mp3_info.comment);
+	printf("flag_oc : %s\n", mp3_info.Flag_oc);
+	printf("oc : %s\n", mp3_info.oc);
+	printf("style : %s\n", mp3_info.Style);
+	fclose(fp);
+	return 0;
+}
+
